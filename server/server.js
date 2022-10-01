@@ -14,6 +14,9 @@ const io = new Server(server, {
 })
 const PORT = process.env.PORT || 8080
 
+// Routes
+const CHAT = require('./routes/api/chat')
+
 // Routes mapping
 app.use('/api/chat', CHAT)
 
@@ -22,9 +25,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public'))
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
 }
-
-// Routes
-const CHAT = require('./routes/api/chat')
 
 // Middleware
 app.use(bodyParser.json())
