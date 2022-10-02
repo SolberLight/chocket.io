@@ -35,7 +35,8 @@ router.delete('/message/:id', async (req, res) => {
 
 async function loadChatCollection()
 {
-    const client = await mongoDB.MongoClient.connect('mongodb://localhost:27017/chocket', {
+    const URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/chocket'
+    const client = await mongoDB.MongoClient.connect(URL, {
         useNewUrlParser: true,
     })
 
