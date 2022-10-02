@@ -12,6 +12,9 @@ const io = new Server(server, {
         methods: ['GET', 'POST', 'REMOVE']
     }
 })
+
+console.log(process.env)
+
 const PORT = process.env.PORT || 8080
 
 // Routes
