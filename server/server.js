@@ -13,8 +13,6 @@ const io = new Server(server, {
     }
 })
 
-console.log(process.env)
-
 const PORT = process.env.PORT || 8080
 
 // Routes

@@ -4,8 +4,11 @@ const {ObjectID} = require("mongodb");
 
 const router = express.Router()
 
+const DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/chocket'
+
 // GET Messages
 router.get('/messages', async (req, res) => {
+    console.log(DATABASE_URL)
     const chat = await loadChatCollection()
 
     res.send(await chat.find({}).toArray())
