@@ -16,7 +16,7 @@ router.get('/messages', async (req, res) => {
 // POST Message
 router.post('/message', async (req, res) => {
     const chat = await loadChatCollection()
-    console.log(req, req.body)
+
     await chat.insertOne({
         message: req.body.message,
         username: req.body.username,
