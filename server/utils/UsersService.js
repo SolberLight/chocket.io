@@ -4,6 +4,9 @@ const users = []
 function userJoin(id, username, room) {
     const user = { id, username, room }
 
+    if (getCurrentUser(id)) {
+        userLeave(id)
+    }
     users.push(user)
 
     return user

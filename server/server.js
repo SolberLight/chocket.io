@@ -39,20 +39,20 @@ io.on('connection', (socket) => {
         const user = userJoin(socket.id, username, room)
 
         socket.join(user.room)
+    })
 
-        socket.on('SEND_MESSAGE', data => {
-            const user = getCurrentUser(socket.id)
+    socket.on('SEND_MESSAGE', data => {
+        const user = getCurrentUser(socket.id)
 
-            io.to(user.room).emit('MESSAGE', data)
-        })
+        io.to(user.room).emit('MESSAGE', data)
+    })
 
-        socket.on('disconnect', () => {
-            const user = getCurrentUser(socket.id)
+    socket.on('disconnect', () => {
+        const user = getCurrentUser(socket.id)
 
-            if (user) {
-                userLeave(user.id)
-            }
-        })
+        if (user) {
+            userLeave(user.id)
+        }
     })
 })
 
