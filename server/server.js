@@ -32,10 +32,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 io.on('connection', (socket) => {
-    console.log('New socket user')
-
     socket.on('SEND_MESSAGE', data => {
-        console.log('received message in back')
         io.emit('MESSAGE', data)
     })
 })

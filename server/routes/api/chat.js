@@ -8,7 +8,6 @@ const DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/choc
 
 // GET Messages
 router.get('/messages', async (req, res) => {
-    console.log(DATABASE_URL)
     const chat = await loadChatCollection()
 
     res.send(await chat.find({}).toArray())
@@ -38,9 +37,7 @@ router.delete('/message/:id', async (req, res) => {
 
 async function loadChatCollection()
 {
-    const URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/chocket'
-    console.log(URL)
-    const client = await mongoDB.MongoClient.connect(URL, {
+    const client = await mongoDB.MongoClient.connect(DATABASE_URL, {
         useNewUrlParser: true,
     })
 
