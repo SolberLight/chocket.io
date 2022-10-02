@@ -5,10 +5,10 @@ const url = '/api/chat';
 class ChatService
 {
     // Get messages
-    static getMessages() {
+    static getMessages(room) {
         return new Promise((resolve, reject) => {
             try {
-                axios.get(url + '/messages').then((res) => {
+                axios.get(url + '/messages/' + room).then((res) => {
                     const data = res.data
 
                     resolve(
@@ -28,10 +28,11 @@ class ChatService
     }
 
     // Create Message
-    static sendMessage(username, message) {
+    static sendMessage(username, message, room) {
         return axios.post(url + '/message', {
             username,
-            message
+            message,
+            room
         })
     }
 

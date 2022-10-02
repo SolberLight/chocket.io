@@ -7,6 +7,7 @@
             :key="`rooms-${index}`"
             class="no-select"
             :class="{ active: element === roomSelected }"
+            @click="switchRoom(element)"
         >
           {{ element }}
         </li>
@@ -40,6 +41,7 @@
       <div class="type-message-wrapper">
         <input
             v-model="inputMessage"
+            ref="inputMessage"
             type="text"
             placeholder="Say hello !"
             @keydown.enter="sendMessage"
@@ -67,7 +69,7 @@ export default {
       messages: [],
       error: null,
       inputMessage: null,
-      socket: io(location.origin)
+      socket: io(process.env.NODE_ENV === 'production' ? location.origin : 'http://localhost:8080')
     }
   },
 
@@ -87,17 +89,7 @@ export default {
   },
 
   mounted() {
-    ChatService.getMessages().then((data) => {
-      if (data.status === 200) {
-        this.messages = data.messages
-
-        this.$nextTick(() => {
-          this.scrollToBottom('message-container')
-        })
-      } else {
-        this.error = data.message
-      }
-    })
+    this.switchRoom()
 
     this.socket.on('MESSAGE', data => {
       this.messages.push(data)
@@ -106,17 +98,48 @@ export default {
   },
 
   methods: {
+    switchRoom(room = null) {
+      if (room) {
+        this.messages = []
+        this.$emit('switch-room', room)
+      }
+
+      this.$nextTick(() => {
+        ChatService.getMessages(this.roomSelected).then((data) => {
+          if (data.status === 200) {
+            this.messages = data.messages
+
+            this.$nextTick(() => {
+              this.scrollToBottom('message-container')
+            })
+          } else {
+            this.error = data.message
+          }
+        })
+
+        this.socket.emit(
+            'JOIN_ROOM',
+            {
+              username: this.username,
+              room: this.roomSelected
+            })
+
+        this.$refs.inputMessage.focus()
+      })
+    },
     sendMessage() {
       const message = {
         username: this.username,
         message: this.inputMessage,
-        sendAt: new Date()
+        sendAt: new Date(),
+        room: this.roomSelected
       }
 
       this.socket.emit('SEND_MESSAGE', message)
-      ChatService.sendMessage(this.username, this.inputMessage)
+      ChatService.sendMessage(this.username, this.inputMessage, this.roomSelected)
       this.scrollToBottom('message-container')
       this.inputMessage = null
+      this.$refs.inputMessage.focus()
     },
     scrollToBottom(id) {
       const element = document.getElementById(id);

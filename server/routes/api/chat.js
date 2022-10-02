@@ -7,10 +7,10 @@ const router = express.Router()
 const DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/chocket'
 
 // GET Messages
-router.get('/messages', async (req, res) => {
+router.get('/messages/:room', async (req, res) => {
     const chat = await loadChatCollection()
 
-    res.send(await chat.find({}).toArray())
+    res.send(await chat.find({ room: req.params.room }).toArray())
 })
 
 // POST Message
@@ -21,6 +21,7 @@ router.post('/message', async (req, res) => {
         message: req.body.message,
         username: req.body.username,
         sendAt: req.body.sendAt,
+        room: req.body.room
     })
 
     res.status(201).send()

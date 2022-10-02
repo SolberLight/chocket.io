@@ -13,6 +13,7 @@
       :rooms="rooms"
       :username="username"
       :room-selected="roomSelected"
+      @switch-room="roomSelected = $event"
   />
 </template>
 
@@ -32,6 +33,7 @@ export default {
       page: 0,
       rooms: [
           'General',
+          'Questions'
       ],
       roomSelected: null,
       username: null,

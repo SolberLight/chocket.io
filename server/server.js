@@ -32,9 +32,27 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Socket stuff
+const { userJoin, getCurrentUser, userLeave } = require('./utils/UsersService')
+
 io.on('connection', (socket) => {
-    socket.on('SEND_MESSAGE', data => {
-        io.emit('MESSAGE', data)
+    socket.on('JOIN_ROOM', ({ username, room}) => {
+        const user = userJoin(socket.id, username, room)
+
+        socket.join(user.room)
+
+        socket.on('SEND_MESSAGE', data => {
+            const user = getCurrentUser(socket.id)
+
+            io.to(user.room).emit('MESSAGE', data)
+        })
+
+        socket.on('disconnect', () => {
+            const user = getCurrentUser(socket.id)
+
+            if (user) {
+                userLeave(user.id)
+            }
+        })
     })
 })
 
